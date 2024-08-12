@@ -1,0 +1,43 @@
+#defining the services 
+
+version: '3'
+
+services:
+  node-service:
+    build: ./node-service
+    env_file:
+      - .env 
+    ports:
+    - "3000:3000"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=3306
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_DATABASE}
+    networks:
+    - mynetwork
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+     -db_data:/var/lib/mysql
+    networks:
+     - mynetwork
+  nginx:
+      image: nginx:latest
+      ports:
+      - "8080:80"
+      volumes: 
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      depends_on:
+      - node-service
+      networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+

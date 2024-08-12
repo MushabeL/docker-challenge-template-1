@@ -1,0 +1,12 @@
+# create a docker file
+
+
+FROM nginx:latest
+COPY public /usr/share/nginx/html
+EXPOSE 80
+
+# setting requirements for image, downloading and installing ngix
+RUN apt-get update && \
+    apt-get install ngix -y && \
+    apt-get clean && rm rf /var/lib/apt/lists*
+CMD ["nginx", "-g", "daemon off;"]
